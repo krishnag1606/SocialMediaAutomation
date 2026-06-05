@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import socialAuthRouter from "./routes/socialAuthRoutes.js";
+import accountRouter from "./routes/accountRoutes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get('/', (_req: Request, res: Response) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/oauth", socialAuthRouter);
+app.use("/api/accounts", accountRouter);
 
 
 // Global error handler
