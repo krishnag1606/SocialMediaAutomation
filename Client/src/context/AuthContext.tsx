@@ -27,10 +27,18 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children})=
         const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
 
-        if(storedUser && storedToken){
-            setUser(JSON.parse(storedUser))
-            setToken(storedToken)
-            api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+        if (storedUser && storedToken) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+                setToken(storedToken);
+                api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+            } catch {
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
+                delete api.defaults.headers.common["Authorization"];
+            }
+        }
         }
 
         setIsLoading(false)
