@@ -517,7 +517,13 @@ const Scheduler = () => {
       return;
     }
 
-    const scheduledFor = new Date(`${scheduledDate}T${scheduledTime}`).toISOString();
+    const scheduledForDate = new Date(`${scheduledDate}T${scheduledTime}`);
+    if (scheduledForDate <= new Date()) {
+      toast.error("Select a future date and time");
+      return;
+    }
+
+    const scheduledFor = scheduledForDate.toISOString();
     const formData = new FormData();
     formData.append("content", content);
     formData.append("scheduledFor", scheduledFor);
