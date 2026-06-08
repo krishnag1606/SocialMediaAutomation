@@ -13,11 +13,7 @@ import { initScheduler } from "./services/schedulerService.js";
 // 2. Set custom DNS servers to fix Node 24 DNS resolution issues
 dns.setServers(['8.8.8.8', '8.8.4.4']); // Google's DNS servers
 
-
 const app = express();
-
-// Connect to MongoDB
-await connectDB();
 
 // Middleware
 app.use(cors());
@@ -37,8 +33,7 @@ app.use("/api/posts", postRouter);
 app.use("/api/activity", activityRouter);
 
 // Initialize Scheduler
-initScheduler()
-
+initScheduler();
 
 // Global error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -46,6 +41,19 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     res.status(500).send(err?.response?.data?.message || err?.message);
 });
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+const startServer = async () => {
+    await connectDB();
+
+    if (process.env.NODE_ENV !== 'production') {
+        app.listen(port, () => {
+            console.log(`Server is running at http://localhost:${port}`);
+        });
+    }
+};
+
+startServer().catch((err) => {
+    console.error("Failed to start server:", err);
+    process.exit(1);
 });
+
+export default app;

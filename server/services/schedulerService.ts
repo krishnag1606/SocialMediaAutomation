@@ -1,7 +1,8 @@
 import cron from "node-cron";
 import { Post } from "../models/Posts.js";
 import { Account } from "../models/Account.js";
-import zernio from "../config/zernio.js";
+// ZERNIO - commented out for Vercel deployment
+// import zernio from "../config/zernio.js";
 import { ActivityLog } from "../models/ActivityLog.js";
 
 export const initScheduler = ()=>{
@@ -29,38 +30,42 @@ export const initScheduler = ()=>{
                         accountId: acc.zernioAccountId!
                     }))
 
-                    const payload = {
-                        content: post.content,
-                        publishNow: true,
-                        ...(post.mediaUrl ? {mediaItems: [{type: post.mediaType || "image", url: post.mediaUrl}]} : {}),
-                        platforms: zernioPlatforms,
-                    }
+                    // ZERNIO - commented out for Vercel deployment
+                    console.log(`Zernio integration disabled for Vercel deployment; skipping publish for post ${post._id}`);
+                    continue;
 
-                    console.log(`Publishing post ${post._id} to Zernio with media: ${post.
-                    mediaUrl || "none"}`)
+                    // const payload = {
+                    //     content: post.content,
+                    //     publishNow: true,
+                    //     ...(post.mediaUrl ? {mediaItems: [{type: post.mediaType || "image", url: post.mediaUrl}]} : {}),
+                    //     platforms: zernioPlatforms,
+                    // }
 
-                    const response = await zernio.posts.createPost({
-                        body: payload
-                    })
+                    // console.log(`Publishing post ${post._id} to Zernio with media: ${post.
+                    // mediaUrl || "none"}`)
 
-                    const publishedPost = (response.data as any)?.post || response.data;
+                    // const response = await zernio.posts.createPost({
+                    //     body: payload
+                    // })
 
-                    if(!publishedPost){
-                        throw new Error("Failed to get post object from Zernio response");
-                    }
+                    // const publishedPost = (response.data as any)?.post || response.data;
 
-                    console.log(`Zernio post created: ${publishedPost._id || publishedPost.id}`);
+                    // if(!publishedPost){
+                    //     throw new Error("Failed to get post object from Zernio response");
+                    // }
 
-                    post.status = "published";
-                    await post.save();
+                    // console.log(`Zernio post created: ${publishedPost._id || publishedPost.id}`);
 
-                    await ActivityLog.create({
-                        user: post.user,
-                        actionType: "POST_PUBLISHED",
-                        description: `Published post to ${accounts.map((a) => a.platform).
-                        join(", ")}`,
-                        relatedPost: post._id,
-                    })
+                    // post.status = "published";
+                    // await post.save();
+
+                    // await ActivityLog.create({
+                    //     user: post.user,
+                    //     actionType: "POST_PUBLISHED",
+                    //     description: `Published post to ${accounts.map((a) => a.platform).
+                    //     join(", ")}`,
+                    //     relatedPost: post._id,
+                    // })
                     
                 } catch (err: any) {
                     console.error(`Failed to publish post ${post._id} :`, err?.response?.data || err?.message);

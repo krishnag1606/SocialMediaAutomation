@@ -46,7 +46,7 @@ export const generatePost = async (req: AuthRequest, res: Response): Promise<voi
 
         const apiKey = process.env.GEMINI_API_KEY;
         if(!apiKey){
-            res.status(400).json({ message: "GEMINI API key is missing"});
+            res.status(400).json({ message: "GEMINI API key is missing. Please configure it in your environment."});
             return;
         }
 
@@ -131,9 +131,16 @@ export const generatePost = async (req: AuthRequest, res: Response): Promise<voi
 
         res.json(generation)
 
-    }catch(err){
-        console.error(err);
-        res.status(500).json({ message: "Error generating post" });
+    }catch(err: any){
+        console.error("Error generating post:", err?.message || err, err?.response?.data || {});
+        
+        // Handle Gemini API key error
+        if(err?.message?.includes("API Key") || err?.response?.data?.error?.message?.includes("API key")){
+            res.status(400).json({ message: "Invalid or missing Gemini API key. Please check your configuration." });
+            return;
+        }
+        
+        res.status(500).json({ message: err?.message || "Error generating post" });
     }
 };
 

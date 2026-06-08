@@ -13,10 +13,11 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
             token = req.headers.authorization.split(" ")[1];
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET!)
             req.user = await User.findById(decoded.id).select("-password")
+            return next();
         } catch (error: any) {
-            res.status(401).json({ message: "Auth error:", error: error?.message || error });
+            return res.status(401).json({ message: "Auth error:", error: error?.message || error });
         }
-    }else{
-        res.status(401).json({ message: "No token, authorization denied" });
     }
+
+    return res.status(401).json({ message: "No token, authorization denied" });
 }

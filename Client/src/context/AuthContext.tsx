@@ -39,11 +39,9 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children})=
                 delete api.defaults.headers.common["Authorization"];
             }
         }
-        }
 
-        setIsLoading(false)
-
-    },[])
+        setIsLoading(false);
+    }, []);
 
     const login = (userData: User, newToken: string)=>{
         setUser(userData)

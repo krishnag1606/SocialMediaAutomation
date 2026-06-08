@@ -1,7 +1,8 @@
 import { Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
 import { Account } from "../models/Account.js";
-import zernio from "../config/zernio.js";
+// ZERNIO - commented out for Vercel deployment
+// import zernio from "../config/zernio.js";
 
 // Get all accounts
 // GET /api/accounts
@@ -38,12 +39,13 @@ export const disconnectAccount = async (req: AuthRequest, res: Response): Promis
         }
 
         if (account.zernioAccountId) {
-            try {
-                await zernio.accounts.deleteAccount({ path: { accountId: account.zernioAccountId } });
-            } catch (error: any) {
-                res.status(500).json({ message: error?.response?.data?.message || error?.message });
-                return;
-            }
+            // ZERNIO - commented out for Vercel deployment
+            // try {
+            //     await zernio.accounts.deleteAccount({ path: { accountId: account.zernioAccountId } });
+            // } catch (error: any) {
+            //     res.status(500).json({ message: error?.response?.data?.message || error?.message });
+            //     return;
+            // }
         }
         await account.deleteOne();
         res.json({ message: "Account disconnected successfully" });
