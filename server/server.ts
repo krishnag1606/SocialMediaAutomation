@@ -1,4 +1,5 @@
 import "dotenv/config";
+import dns from "dns";
 import express, { NextFunction, Request, Response } from 'express';
 import cors from "cors";
 import connectDB from "./config/db.js";
@@ -8,6 +9,10 @@ import accountRouter from "./routes/accountRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import activityRouter from "./routes/activityRoutes.js";
 import { initScheduler } from "./services/schedulerService.js";
+
+// 2. Set custom DNS servers to fix Node 24 DNS resolution issues
+dns.setServers(['8.8.8.8', '8.8.4.4']); // Google's DNS servers
+
 
 const app = express();
 
