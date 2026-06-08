@@ -12,7 +12,7 @@ SocialMediaAutomation/
 │   ├── config/          # Configuration files
 │   ├── server.ts        # Entry point
 │   ├── package.json     # Dependencies
-│   └── .env.example     # Environment variables template
+│   └── .env    # Environment variables template
 │
 └── Client/              # React frontend (Vite)
     ├── src/
@@ -23,7 +23,7 @@ SocialMediaAutomation/
     │   └── main.tsx     # Entry point
     ├── package.json
     ├── vite.config.ts
-    └── .env.example
+    └── .env
 ```
 
 ## Prerequisites
