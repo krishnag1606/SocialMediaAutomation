@@ -15,8 +15,17 @@ dns.setServers(['8.8.8.8', '8.8.4.4']); // Google's DNS servers
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// CORS — allow the deployed frontend origin (set FRONTEND_URL in Vercel env vars)
+// Falls back to "*" so local dev and unset deployments still work.
+const corsOptions = {
+    origin: process.env.FRONTEND_URL
+        ? [process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:5174"]
+        : "*",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.options("/*splat", cors(corsOptions)); // Handle preflight for all routes
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const port = process.env.PORT || 3000;
